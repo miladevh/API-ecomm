@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from .managers import UserManager
 from django.db.models.signals import post_save
+from datetime import date
 
 class User(AbstractBaseUser):
 
@@ -37,7 +38,7 @@ class User(AbstractBaseUser):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     address = models.TextField(null=True, blank=True)
-    birth_date = models.DateField()
+    birth_date = models.DateField(default=date.today)
     postal_code = models.CharField(max_length=20, null=True, blank=True)
     balance = models.IntegerField(default=1000)
 
