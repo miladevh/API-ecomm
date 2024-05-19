@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, UserProfile
 
 
 
@@ -42,3 +42,46 @@ class UserChangePasswordSerializer(serializers.Serializer):
         instance.set_password(validated_data['new_password'])
         instance.save()
         return instance
+    
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+        
+    class Meta:
+        model = UserProfile
+        fields = ['address', 'birth_date', 'postal_code', 'balance']
+        extra_kwargs = {
+            'balance':{'read_only':True}
+        }
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+
+    profile = ProfileSerializer()
+
+    class Meta:
+        model = User
+        fields = ['email', 'phone_number', 'full_name', 'profile']
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    

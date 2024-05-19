@@ -1,7 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User
+from .models import User, UserProfile
 from django.contrib.auth.models import Group
+
+
+class UserProfileInline(admin.StackedInline):
+    model = UserProfile
 
 
 class UserAdmin(BaseUserAdmin):
@@ -18,6 +22,7 @@ class UserAdmin(BaseUserAdmin):
         (None, {'fields':('email', 'phone_number', 'full_name', 'password1', 'password2')}),
     )
 
+    inlines = (UserProfileInline,)
     search_fields = ('email', 'full_name')
     ordering = ('full_name',)
     filter_horizontal = ()
