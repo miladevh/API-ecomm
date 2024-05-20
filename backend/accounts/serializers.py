@@ -83,5 +83,4 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 
-
     

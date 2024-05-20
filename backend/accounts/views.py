@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import UserRegisterSerializer, UserChangePasswordSerializer, UserProfileSerializer
+from .serializers import (UserRegisterSerializer, UserChangePasswordSerializer, 
+                          UserProfileSerializer, ProfileSerializer)
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -40,5 +41,29 @@ class UserProfileView(APIView):
         user = request.user
         serializer = UserProfileSerializer(instance=user,)
         return Response(serializer.data)
+    
+
+class UserProfileChange(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        user = request.user.profile
+        ser_data = ProfileSerializer(instance=user, data=request.data, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(ser_data.data,)
+
+        
+
+
+
+
+
+
+
+
+
+
 
 
