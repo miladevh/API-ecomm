@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from . models import Product
+from . models import Product, Comment
 
 
 class ProductSrz(serializers.ModelSerializer):
@@ -10,9 +10,19 @@ class ProductSrz(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CommentSrz(serializers.ModelSerializer):
+
+    user = serializers.SlugRelatedField(read_only=True, slug_field='full_name')
+    product = serializers.SlugRelatedField(read_only=True, slug_field='name')
+    
+    class Meta:
+        model = Comment
+        fields = '__all__'
+
 class ProductDetailSrz(serializers.ModelSerializer):
 
     url = serializers.SerializerMethodField()
+    comments = CommentSrz(read_only=True, many=True)
 
     class Meta:
         model = Product
@@ -24,3 +34,8 @@ class ProductDetailSrz(serializers.ModelSerializer):
 
 class ProductSearchSrz(serializers.Serializer):
     search_item = serializers.CharField(required=False)
+
+
+
+
+        

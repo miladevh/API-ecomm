@@ -1,7 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Product
-from .serializers import ProductSrz, ProductDetailSrz, ProductSearchSrz
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from .serializers import ProductSrz, ProductDetailSrz, ProductSearchSrz, CommentSrz
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 
@@ -33,3 +35,17 @@ class ProductSearchView(APIView):
                 return Response(result.data, status=status.HTTP_200_OK)
             return Response({'message': 'products not found'}, status=status.HTTP_404_NOT_FOUND)
         return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class CommentCreateView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        ser_data = CommentSrz(data=request.POST)
+        if ser_data.is_valid():
+            ser_data.save(user=request.user, product=product)
+            result = ProductDetailSrz(instance=product)
+            return Response(result.data)
